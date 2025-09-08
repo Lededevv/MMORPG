@@ -1,0 +1,23 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+    {{ad.heading}}
+{% endblock title %}
+
+{% block content %}
+<table>
+    <tr>
+    <td>Автор</td>
+    <td>Заголовок</td>
+    <td>Содержание</td>
+     </tr>
+
+  <tr>
+    <td>{{ad.user}}</td>
+    <td>{{ad.heading}}</td>
+    <td>{{ad.text|safe}}</td>
+     </tr>
+
+</table>
+
+{% endblock content %}
