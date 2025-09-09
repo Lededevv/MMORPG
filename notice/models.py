@@ -21,3 +21,7 @@ class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.CharField(max_length=255)
     time_create = models.DateTimeField(auto_now_add=True)
+
+class UserCode(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    code = models.CharField(max_length=255)

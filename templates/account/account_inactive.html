@@ -1,0 +1,18 @@
+{% extends "allauth/layouts/entrance.html" %}
+
+{% block content %}
+<div>
+    <h3>Активация аккаунта</h3>
+    <form acnion="" metod="post">
+        {%csrf_token %}
+        <label>
+        <input type="text" name="code" placeholder="Введите код активации">
+
+        </label>
+        <br>
+        <input type = "submit" value="Активировать" class="btn btn-success btn-sm mt-3">
+
+    </form>
+
+</div>
+{% endblock content %}
