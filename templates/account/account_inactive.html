@@ -3,7 +3,7 @@
 {% block content %}
 <div>
     <h3>Активация аккаунта</h3>
-    <form acnion="" metod="post">
+    <form action="{% url 'confirm_user' %}" method="post">
         {%csrf_token %}
         <label>
         <input type="text" name="code" placeholder="Введите код активации">

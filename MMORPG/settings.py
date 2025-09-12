@@ -223,7 +223,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 LOGIN_URL =  'accounts/login'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = 'profile'
 LOGOUT_REDIRECT_URL = 'account_login'
 
 ACCOUNT_SIGNUP_FIELDS = ['email*','usermane*','password1*','password2*']
