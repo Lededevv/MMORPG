@@ -226,7 +226,7 @@ LOGIN_URL =  'accounts/login'
 LOGIN_REDIRECT_URL = 'profile'
 LOGOUT_REDIRECT_URL = 'account_login'
 
-ACCOUNT_SIGNUP_FIELDS = ['email*','usermane*','password1*','password2*']
+ACCOUNT_SIGNUP_FIELDS = ['email*','username*','password1*','password2*']
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_LOGIN_METHODS = {'email','username'}

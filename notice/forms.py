@@ -1,10 +1,17 @@
 from allauth.account.forms import SignupForm
 
 from django.core.mail import send_mail
+from django.forms import ModelForm
 
 from MMORPG import settings
-from notice.models import UserCode
+from notice.models import UserCode, Ad
 import secrets
+
+
+class AdForm(ModelForm):
+    class Meta:
+        model = Ad
+        fields = ['heading', 'text', 'category']
 
 
 class ConfirmSignupForm(SignupForm):

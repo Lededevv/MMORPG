@@ -1,14 +1,36 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
-from django.views.generic import UpdateView
+from django.views.generic import UpdateView, ListView, DetailView, CreateView
 
+from notice.forms import AdForm
 from notice.models import Ad, UserCode
 
+class Adlist(ListView):
+    model = Ad
+    context_object_name = 'ads'
+    template_name = 'ad/ad_list.html'
 
-def ad_detail(request, pk):
-    ad = Ad.objects.get(pk=pk)
-    return render(request, 'ad/ad_detail.html', {'ad':ad})
+class AdDetail(DetailView):
+    model = Ad
+    context_object_name = 'ad'
+    template_name = 'ad/ad_detail.html'
+
+class AdCreate(LoginRequiredMixin, CreateView):
+    model = Ad
+    form_class = AdForm
+    template_name = 'ad/ad_create.html'
+    login_url = 'account_login'
+
+    def form_valid(self, form):
+        ad = form.save(commit=False)
+        ad.user = self.request.user
+        ad.save()
+        return super().form_valid(form)
+
+
+
 
 class ConfirmUser(UpdateView):
     model = User

@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
 from ckeditor_uploader.fields import RichTextUploadingField
+from django.urls import reverse_lazy
+
 
 class Category(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -15,6 +17,8 @@ class Ad(models.Model):
     time_in = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return self.heading
+    def get_absolute_url(self):
+        return reverse_lazy('ad_detail', kwargs={'pk': self.pk})
 
 class Comment(models.Model):
     Ad = models.ForeignKey(Ad, on_delete=models.CASCADE)
