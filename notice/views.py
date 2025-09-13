@@ -1,10 +1,12 @@
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.views.generic import UpdateView, ListView, DetailView, CreateView
 
-from notice.forms import AdForm
+from notice.forms import AdForm, CommentForm
 from notice.models import Ad, UserCode
 
 class Adlist(ListView):
@@ -16,6 +18,33 @@ class AdDetail(DetailView):
     model = Ad
     context_object_name = 'ad'
     template_name = 'ad/ad_detail.html'
+
+    def post(self, request, *args, **kwargs):
+        ad = self.get_object()
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.user = request.user
+            comment.ad = ad
+            comment.save()
+            send_mail(
+                subject='Отклик на объявление',
+                message=f'Привет {ad.user.username}!'
+                        f'На ваше объявление "{ad.heading}" '
+                        f'Пользователь: {comment.user.username} оставил отклик ',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[ad.user.email],
+
+            )
+            return redirect('ad_detail', ad.pk)
+        return render(request, 'ad/ad_detail.html', {'form': form})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = CommentForm()
+        return context
+
+
+
 
 class AdCreate(LoginRequiredMixin, CreateView):
     model = Ad

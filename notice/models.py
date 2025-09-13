@@ -21,7 +21,7 @@ class Ad(models.Model):
         return reverse_lazy('ad_detail', kwargs={'pk': self.pk})
 
 class Comment(models.Model):
-    Ad = models.ForeignKey(Ad, on_delete=models.CASCADE)
+    ad = models.ForeignKey(Ad, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.CharField(max_length=255)
     time_create = models.DateTimeField(auto_now_add=True)

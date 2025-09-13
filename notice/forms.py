@@ -4,7 +4,7 @@ from django.core.mail import send_mail
 from django.forms import ModelForm
 
 from MMORPG import settings
-from notice.models import UserCode, Ad
+from notice.models import UserCode, Ad, Comment
 import secrets
 
 
@@ -13,6 +13,10 @@ class AdForm(ModelForm):
         model = Ad
         fields = ['heading', 'text', 'category']
 
+class CommentForm(ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['text']
 
 class ConfirmSignupForm(SignupForm):
 

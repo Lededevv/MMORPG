@@ -17,7 +17,26 @@
     <td>{{ad.heading}}</td>
     <td>{{ad.text|safe}}</td>
      </tr>
-
 </table>
+<h3>Добавить отклик</h3>
+
+
+    <form action=""  method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Оставить">
+    </form>
+    <br>
+    {% if ad.comment_set.all %}
+         {% for comment in ad.comment_set.all %}
+          <p>автор: {{comment.user}}<p/> <p> {{comment.text}}</p>
+          {% endfor %}
+    {% else %}
+         <h4>Откликов пока нет</h4>
+     {% endif %}
+
+
+
+
 
 {% endblock content %}
