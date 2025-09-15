@@ -1,20 +1,22 @@
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.views.generic import UpdateView, ListView, DetailView, CreateView
-
+from notice.filters import CommentFilter
 from notice.forms import AdForm, CommentForm
-from notice.models import Ad, UserCode
+from notice.models import Ad, UserCode, Comment
+
 
 class Adlist(ListView):
+    ordering = '-time_in'
     model = Ad
     context_object_name = 'ads'
     template_name = 'ad/ad_list.html'
+    paginate_by = 5
 
-class AdDetail(DetailView):
+class AdDetail(LoginRequiredMixin,DetailView):
     model = Ad
     context_object_name = 'ad'
     template_name = 'ad/ad_detail.html'
@@ -27,15 +29,7 @@ class AdDetail(DetailView):
             comment.user = request.user
             comment.ad = ad
             comment.save()
-            send_mail(
-                subject='Отклик на объявление',
-                message=f'Привет {ad.user.username}!'
-                        f'На ваше объявление "{ad.heading}" '
-                        f'Пользователь: {comment.user.username} оставил отклик ',
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[ad.user.email],
 
-            )
             return redirect('ad_detail', ad.pk)
         return render(request, 'ad/ad_detail.html', {'form': form})
     def get_context_data(self, **kwargs):
@@ -81,6 +75,40 @@ class ConfirmUser(UpdateView):
         return redirect('account_login')
 
 
-@login_required
-def profile(request):
-    return render(request, 'ad/profile.html')
+
+class Profile(LoginRequiredMixin, ListView):
+
+    model = Comment
+    context_object_name = 'comments'
+    template_name = 'ad/profile.html'
+
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(ad__user=self.request.user)
+        self.filter = CommentFilter(self.request.GET, queryset, request=self.request.user)
+        return self.filter.qs
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["filter"] = self.filter
+        return context
+
+def comment_accept(request,pk):
+    comment = Comment.objects.get(pk=pk)
+    comment.status = 'accept'
+    comment.save()
+
+    send_mail(
+                    subject='Принятие отклика',
+                    message='Ваш отклик был принят',
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[comment.user.email],
+
+                )
+    return redirect(request.META.get("HTTP_REFERER"))
+
+def comment_reject(request, pk):
+    comment = Comment.objects.get(pk=pk)
+    comment.status = 'reject'
+    comment.save()
+    return redirect(request.META.get("HTTP_REFERER"))

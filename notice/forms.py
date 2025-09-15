@@ -12,6 +12,11 @@ class AdForm(ModelForm):
     class Meta:
         model = Ad
         fields = ['heading', 'text', 'category']
+        labels = {
+            'heading': 'Заголовок',
+            'text': 'Описание',
+            'category': 'Категория'
+        }
 
 class CommentForm(ModelForm):
     class Meta:

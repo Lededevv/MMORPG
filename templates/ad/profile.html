@@ -6,6 +6,44 @@
 
 {% block content %}
 
-<h3>Страничка авторизированного пользователя  {{user.username}}</h3>
- <img src="/media/d9711f3e-e241-49a0-990d-0760f733dd84.jpeg" alt="ing_profile" width="600" height="600">
+<h2 style="color: orange;">Страничка пользователя  {{user.username}}</h2>
+<h3>Отклики на мои объявления</h3>
+
+<div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+    <form action="" method="get">
+        {{ filter.form.as_p }}
+        <input style="font-size: 0.8em; float: right;" type="submit" value="Применить">
+    </form>
+</div>
+
+<div style="display: flex; flex-direction: column;">
+    {% for comment in comments %}
+    <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+        <div style="flex: 1; margin-right: 10px;">
+            <p style="font-size: 1.5em;text-align: left;"><strong style="color: black;">Автор:</strong> <span style="color: red;">{{comment.user}}</span></p>
+        </div>
+        <div style="flex: 3;">
+            <p style="font-size: 1.5em;">{{comment.text}}</p>
+        </div>
+        <div style="flex: 1;">
+            <p style="font-size: 1.5em;">
+                {% if comment.status == 'accept' %}
+                    <span style="color: green;">Принят</span>
+                {% elif comment.status == 'reject' %}
+                    <span style="color: red;">Отклонен</span>
+                {% else %}
+                    {{comment.get_status_display}}
+                {% endif %}
+            </p>
+            {% if comment.status == 'pending' %}
+            <a href="{% url 'comment_accept' comment.id %}" class="btn btn-success btn-sm">Принять</a>
+            <a href="{% url 'comment_reject' comment.id %}" class="btn btn-danger btn-sm">Отклонить</a>
+            {% endif %}
+        </div>
+    </div>
+    <!-- Дата создания отклика -->
+    <p style="font-size: 1.5em;text-align: left; color: blue;">{{comment.time_create|date:"d.m.Y"}}</p>
+    {% endfor %}
+</div>
+
 {% endblock content %}

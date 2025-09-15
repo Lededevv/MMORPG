@@ -5,38 +5,51 @@
 {% endblock title %}
 
 {% block content %}
-<table>
-    <tr>
-    <td>Автор</td>
-    <td>Заголовок</td>
-    <td>Содержание</td>
-     </tr>
 
-  <tr>
-    <td>{{ad.user}}</td>
-    <td>{{ad.heading}}</td>
-    <td>{{ad.text|safe}}</td>
-     </tr>
-</table>
+<div style="margin-bottom: 20px;"> <!-- Добавляем отступ внизу -->
+    <h2>{{ad.heading}}</h2>
+</div>
+
+<!-- Основное содержание объявления -->
+<div style="display: flex; align-items: flex-start;">
+    <div style="flex: 1; margin-right: 10px;">
+        <!-- Автор и отзывы -->
+        <div style="display: flex; flex-direction: column; align-items: flex-start;">
+            <p style="font-size: 1.5em;"><strong>Автор:</strong> {{ad.user}}</p>
+
+        </div>
+    </div>
+    <div style="flex: 3;">
+        <!-- Текст объявления -->
+        <p>{{ad.text|safe}}</p>
+    </div>
+</div>
+
+
 <h3>Добавить отклик</h3>
 
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Оставить">
+</form>
+<br>
 
-    <form action=""  method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Оставить">
-    </form>
-    <br>
+<div style="display: flex; flex-direction: column;">
     {% if ad.comment_set.all %}
-         {% for comment in ad.comment_set.all %}
-          <p>автор: {{comment.user}}<p/> <p> {{comment.text}}</p>
-          {% endfor %}
+        {% for comment in ad.comment_set.all %}
+        <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+            <div style="flex: 1; margin-right: 10px;">
+                <p style="font-size: 1.5em;"><strong>Автор:</strong> {{comment.user}}</p>
+            </div>
+            <div style="flex: 3;">
+                <p style="font-size: 1.5em;">{{comment.text}}</p>
+            </div>
+        </div>
+        {% endfor %}
     {% else %}
-         <h4>Откликов пока нет</h4>
-     {% endif %}
-
-
-
-
+        <h4>Откликов пока нет</h4>
+    {% endif %}
+</div>
 
 {% endblock content %}

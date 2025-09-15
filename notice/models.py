@@ -21,10 +21,12 @@ class Ad(models.Model):
         return reverse_lazy('ad_detail', kwargs={'pk': self.pk})
 
 class Comment(models.Model):
+    STATUS_CHOICES = (("pending","на рассмотрении"),("accept","принят"),("reject","отклонен"))
     ad = models.ForeignKey(Ad, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.CharField(max_length=255)
     time_create = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
 
 class UserCode(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)

@@ -6,21 +6,57 @@
 
 {% block content %}
 
-<h2>Все объявления</h2>
-<table>
-    <tr>
-    <td>Автор</td>
-    <td>Заголовок</td>
-    <td>Содержание</td>
-     </tr>
-    {% for ad in ads %}
+<div style="margin-bottom: 20px;"> <!-- Добавляем отступ внизу -->
+    <h2>Все объявления</h2>
+</div>
 
-  <tr>
-    <td>{{ad.user}}</td>
-    <td>{{ad.heading}}</td>
-    <td>{{ad.text|safe}}</td>
-     </tr>
-     {% endfor %}
-</table>
+<!-- Объявления выводятся в отдельных блоках -->
+{% for ad in ads %}
+<div style="border-top: 1px solid #ccc; padding: 10px; margin-bottom: 20px;">
+    <!-- Заголовок объявления -->
+    <h3 style="margin-bottom: 10px;">{{ad.heading}}</h3>
+
+    <!-- Основное содержание объявления -->
+    <div style="display: flex; align-items: flex-start;">
+        <div style="flex: 1; margin-right: 10px;">
+            <!-- Автор и отзывы -->
+            <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                <p style="font-size: 1.5em;"><strong>Автор:</strong> {{ad.user}}</p>
+            </div>
+        </div>
+        <div style="flex: 3;">
+            <!-- Текст объявления -->
+            <p>{{ad.text|safe}}</p>
+        </div>
+    </div>
+    <!-- Дата создания и отклики -->
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <p style="font-size: 1.5em;">{{ad.time_in|date:"d.m.Y"}}</p>
+        <a href="{% url 'ad_detail' pk=ad.id %}" class="btn btn-primary">Отклики</a>
+    </div>
+</div>
+{% empty %}
+<p>Объявлений пока нет.</p>
+{% endfor %}
+
+{% if page_obj.has_previous %}
+   <a href="?page=1">1</a>
+   {% if page_obj.previous_page_number != 1 %}
+       ...
+       <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+   {% endif %}
+{% endif %}
+
+<!-- Информация о текущей странице -->
+{{ page_obj.number }}
+
+<!-- Информация о следующих страницах -->
+{% if page_obj.has_next %}
+   <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+   {% if paginator.num_pages != page_obj.next_page_number %}
+       ...
+       <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+   {% endif %}
+{% endif %}
 
 {% endblock content %}
