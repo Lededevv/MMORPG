@@ -16,6 +16,16 @@ class Adlist(ListView):
     template_name = 'ad/ad_list.html'
     paginate_by = 5
 
+class AdEdit(LoginRequiredMixin, UpdateView):
+
+    form_class = AdForm
+    model = Ad
+    template_name = 'ad/ad_edit.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_authenticated'] = self.request.user.is_authenticated
+        return context
+
 class AdDetail(LoginRequiredMixin,DetailView):
     model = Ad
     context_object_name = 'ad'

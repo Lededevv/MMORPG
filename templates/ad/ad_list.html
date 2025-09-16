@@ -29,10 +29,15 @@
             <p>{{ad.text|safe}}</p>
         </div>
     </div>
-    <!-- Дата создания и отклики -->
+    <!-- Дата создания и кнопки -->
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <p style="font-size: 1.5em;">{{ad.time_in|date:"d.m.Y"}}</p>
-        <a href="{% url 'ad_detail' pk=ad.id %}" class="btn btn-primary">Отклики</a>
+        <div>
+            <a href="{% url 'ad_detail' pk=ad.id %}" class="btn btn-primary">Отклики</a>
+            {% if request.user.is_authenticated and request.user == ad.user %}
+            <a href="{% url 'ad_edit' pk=ad.id %}" class="btn btn-secondary">Редактировать</a>
+            {% endif %}
+        </div>
     </div>
 </div>
 {% empty %}

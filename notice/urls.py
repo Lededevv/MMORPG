@@ -1,10 +1,12 @@
 from django.urls import path
 
-from .views import AdDetail, ConfirmUser, Adlist, AdCreate, Profile, comment_accept, comment_reject
+from .views import AdDetail, ConfirmUser, Adlist, AdCreate, Profile, comment_accept, comment_reject, AdEdit
 
 urlpatterns = [
     path('', Adlist.as_view(), name='ad_list'),
+    path('<int:pk>/edit', AdEdit.as_view() ,name='ad_edit'),
     path('<int:pk>', AdDetail.as_view() ,name='ad_detail'),
+
     path('confirm_user/', ConfirmUser.as_view(), name='confirm_user'),
     path('create/', AdCreate.as_view(), name='create'),
     path('profile/', Profile.as_view(), name='profile'),
